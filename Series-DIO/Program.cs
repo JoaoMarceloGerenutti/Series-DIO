@@ -69,48 +69,30 @@ namespace Series_DIO
             {
                 var deleted = serie.GetDeleted();
 
-                Console.WriteLine("#ID {0}: - {1} {2}", serie.GetTitle(), serie.GetTitle(), (deleted ? " * Deleted *" : ""));
+                Console.WriteLine("#ID {0}: - {1} {2}", serie.GetId(), serie.GetTitle(), (deleted ? " * Deleted *" : ""));
             }
         }
 
         private static void InsertSerie()
         {
             Console.WriteLine("Insert New Serie");
-
-            foreach (int i in Enum.GetValues(typeof(Genre)))
-            {
-                Console.WriteLine("{0} - {1}", i, Enum.GetName(typeof(Genre), i));
-            }
-            Console.Write("Choose a Genre in the options above: ");
-            int genreChoose = int.Parse(Console.ReadLine());
-
-            Console.Write("Insert the Title of the Serie: ");
-            string serieTitle = Console.ReadLine();
-
-            Console.Write("Insert the Year of the Serie: ");
-            int serieYear = int.Parse(Console.ReadLine());
-
-            Console.Write("Insert the Description of the Serie: ");
-            string serieDescription = Console.ReadLine();
-
-            Serie newSerie = new Serie(id: repository.NextId(),
-                genre: (Genre)genreChoose,
-                title: serieTitle,
-                year: serieYear,
-                description: serieDescription);
-
-            repository.Insert(newSerie);
+            repository.Insert(InsertOrUpdateSerie(repository.NextId()));
         }
 
         private static void UpdateSerie()
         {
             Console.Write("Insert the ID of the Serie: ");
             int serieIndex = int.Parse(Console.ReadLine());
+            repository.Update(serieIndex, InsertOrUpdateSerie(serieIndex));
+        }
 
+        private static Serie InsertOrUpdateSerie(int serieIndex)
+        {
             foreach (int i in Enum.GetValues(typeof(Genre)))
             {
                 Console.WriteLine("{0} - {1}", i, Enum.GetName(typeof(Genre), i));
             }
+
             Console.Write("Choose a Genre in the options above: ");
             int genreChoose = int.Parse(Console.ReadLine());
 
@@ -123,13 +105,13 @@ namespace Series_DIO
             Console.Write("Insert the Description of the Serie: ");
             string serieDescription = Console.ReadLine();
 
-            Serie serieUpdate = new Serie(id: serieIndex,
+            Serie serie = new Serie(id: serieIndex,
                 genre: (Genre)genreChoose,
                 title: serieTitle,
                 year: serieYear,
                 description: serieDescription);
 
-            repository.Update(serieIndex, serieUpdate);
+            return serie;
         }
 
         private static void DeleteSerie()
@@ -152,6 +134,7 @@ namespace Series_DIO
 
         private static string GetUserOption()
         {
+            Console.WriteLine();
             Console.WriteLine("Series DIO at your services!");
             Console.WriteLine("Enter a Option: ");
             Console.WriteLine();
